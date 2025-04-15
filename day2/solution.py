@@ -24,14 +24,14 @@ class School:
         self.students_list.append(student)
 
     def school_average(self):
-          scores = []
-          if not self.students_list:
-              raise ValueError("生徒が登録されていません")
-          for student in self.students_list:
-              for score in student.scores:
-                  scores.append(score)
-          return round(sum(scores) / len(scores), 2)
-                  
+        scores = []
+        if not self.students_list:
+            raise ValueError("生徒が登録されていません")
+        for student in self.students_list:
+            for score in student.scores:
+                scores.append(score)
+        return round(sum(scores) / len(scores), 2)
+
     def top_student(self):
         if not self.students_list:
             raise ValueError("生徒が登録されていません")
