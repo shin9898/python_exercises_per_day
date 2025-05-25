@@ -30,3 +30,38 @@ summary = defaultdict(lambda: {'num_participants': 0}) で、event_name をキ�
 defaultdictを使う際に、何をキーにして、何を値として格納すれば、その後の処理（ソートや最終的な出力形式への変換）がスムーズになるかを考えることがポイントです。
 今回のケースでは、event_idをキーにし、値としてevent_nameとnum_participantsを持つ辞書を格納すると、後の処理が格段に楽になります。
 少し複雑に感じるかもしれませんが、一歩一歩分解して考えることが重要です。
+
+### 模範回答
+
+```python
+from collections import defaultdict
+
+def analyze_events(events: list[dict], participants: list[dict]) -> list[dict]:
+    # ステップ1: "Tech"カテゴリのイベントを抽出
+    tech_events = list(filter(lambda event: "Tech" in event['category'], events))
+
+    # ステップ2: 各イベントの参加者数をカウント
+    event_counts = defaultdict(int)
+    for participant in participants:
+        for event_id in participant['registered_events']:
+            event_counts[event_id] += 1
+
+    # ステップ3: Techイベントに一人でも参加者が登録しているイベントのみをフィルタリングし、必要な情報を整形
+    processed_events = []
+    for event in tech_events:
+        event_id = event['event_id']
+        event_name = event['name']
+        num_participants = event_counts.get(event_id, 0) # 参加者がいない場合は0
+        if num_participants > 0: # 一人でも参加者がいる場合のみ追加
+            processed_events.append({
+                "event_name": event_name,
+                "num_participants": num_participants
+            })
+
+    # ステップ4: ソートと最終出力形式への変換
+    # num_participants の降順、event_name の昇順でソート
+    sorted_output = sorted(processed_events,
+                           key=lambda x: (-x['num_participants'], x['event_name']))
+
+    return sorted_output # ここで既に目的の形式になっている
+```
